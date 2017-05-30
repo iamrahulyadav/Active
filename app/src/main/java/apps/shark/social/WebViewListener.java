@@ -33,10 +33,6 @@ import java.io.File;
 
 import im.delight.android.webview.AdvancedWebView;
 
-/**
- * Created by Harsha on 5/5/2017.
- */
-
 class WebViewListener implements AdvancedWebView.Listener {
     private static final int ID_SAVE_IMAGE = 0;
     private static final int ID_SHARE_IMAGE = 1;

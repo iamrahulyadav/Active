@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.URLUtil;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,6 +47,10 @@ import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.greysonparrelli.permiso.Permiso;
 import com.mikepenz.actionitembadge.library.ActionItemBadge;
 import com.mikepenz.actionitembadge.library.utils.BadgeStyle;
@@ -72,6 +77,8 @@ public class MainActivity extends AppCompatActivity
     public static final String FACEBOOK_URL_BASE_ENCODED = "https%3A%2F%2Fm.facebook.com%2F";
     public static final List<String> HOSTNAMES = Arrays.asList("facebook.com", "*.facebook.com", "*.fbcdn.net", "*.akamaihd.net");
     public final BadgeStyle BADGE_SIDE_FULL = new BadgeStyle(BadgeStyle.Style.LARGE, R.layout.menu_badge_full, R.color.colorAccent, R.color.colorAccent, Color.WHITE);
+    private FirebaseAnalytics mFirebaseAnalytics;
+    private AdView mAdView;
 
     // Members
     PackageInfo info;
@@ -149,9 +156,14 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Permiso.getInstance().setActivity(this);
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        MobileAds.initialize(this, "ca-app-pub-3736041520074042~9096236616");
+       mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
 
-        // Preferences
+    // Preferences
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -215,6 +227,7 @@ public class MainActivity extends AppCompatActivity
                     case SettingsActivity.KEY_PREF_NOTIFICATION_INTERVAL:
                         PollReceiver.scheduleAlarms(getApplicationContext(), false);
                         break;
+
                     default:
                         break;
                 }
@@ -434,10 +447,10 @@ public class MainActivity extends AppCompatActivity
                 Intent FBActivity = new Intent(MainActivity.this, MainActivity.class);
                 startActivity(FBActivity);
 
-            case R.id.tw:
+            /*case R.id.tw:
                 Intent TWActivity = new Intent(MainActivity.this, MainActivity.class);
                 startActivity(TWActivity);
-                break;
+                break; */
             case R.id.nav_news:
                 mWebView.loadUrl("javascript:(function()%7Btry%7Bdocument.querySelector('%23feed_jewel%20%3E%20a').click()%7Dcatch(_)%7Bwindow.location.href%3D'" + FACEBOOK_URL_BASE_ENCODED + "home.php'%7D%7D)()");
                 item.setChecked(true);
@@ -512,8 +525,8 @@ public class MainActivity extends AppCompatActivity
 
         if (AccessToken.getCurrentAccessToken() != null && Helpers.getCookie() != null) {
             // Logged in, show webview
-            mWebView.setVisibility(View.VISIBLE);
-
+           mWebView.setVisibility(View.VISIBLE);
+             //
             // Hide login button
             mNavigationView.getMenu().findItem(R.id.nav_fblogin).setVisible(false);
 
@@ -527,7 +540,8 @@ public class MainActivity extends AppCompatActivity
             // Not logged in (possibly logged into Facebook OAuth and/or webapp)
             loginSnackbar = Helpers.loginPrompt(mCoordinatorLayoutView);
             setLoading(false);
-            mWebView.setVisibility(View.GONE);
+           mWebView.setVisibility(View.GONE);
+            //mWebView.loadUrl("file:///android_asset/intro.html");
 
             // Show login button
             mNavigationView.getMenu().findItem(R.id.nav_fblogin).setVisible(true);
@@ -541,6 +555,7 @@ public class MainActivity extends AppCompatActivity
             // Kill the Feed URL, so we don't get the wrong notifications
             mPreferences.edit().putString("feed_uri", null).apply();
             return false;
+
         }
     }
 
@@ -651,30 +666,31 @@ public class MainActivity extends AppCompatActivity
         // If nothing has happened at this point, we want the default url
         return FACEBOOK_URL_BASE;
     }
-        public void loadWebView(){
-            mWebView = (AdvancedWebView) findViewById(R.id.webview);
-            assert mWebView != null;
-            mWebView.addPermittedHostnames(HOSTNAMES);
-            mWebView.setGeolocationEnabled(mPreferences.getBoolean(SettingsActivity.KEY_PREF_LOCATION, false));
+    public void loadWebView() {
+        mWebView = (AdvancedWebView) findViewById(R.id.webview);
+        assert mWebView != null;
+        mWebView.addPermittedHostnames(HOSTNAMES);
+        mWebView.setGeolocationEnabled(mPreferences.getBoolean(SettingsActivity.KEY_PREF_LOCATION, false));
 
-            mWebView.setListener(this, new WebViewListener(this, mWebView));
-            mWebView.addJavascriptInterface(new JavaScriptInterfaces(this), "android");
-            registerForContextMenu(mWebView);
+        mWebView.setListener(this, new WebViewListener(this, mWebView));
+        mWebView.addJavascriptInterface(new JavaScriptInterfaces(this), "android");
+        registerForContextMenu(mWebView);
 
-            mWebView.getSettings().setBlockNetworkImage(mPreferences.getBoolean(SettingsActivity.KEY_PREF_STOP_IMAGES, false));
-            mWebView.getSettings().setAppCacheEnabled(true);
-            mWebView.getSettings().setSupportZoom(true);
-            mWebView.getSettings().setBuiltInZoomControls(false);
-            mWebView.getSettings().setLoadWithOverviewMode(true);
-            mWebView.getSettings().setUseWideViewPort(true);
-            // Impersonate iPhone to prevent advertising garbage
-            mWebView.getSettings().setUserAgentString("Mozilla/5.0 (Linux; Android 2.2; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36");
+        mWebView.getSettings().setBlockNetworkImage(mPreferences.getBoolean(SettingsActivity.KEY_PREF_STOP_IMAGES, false));
+        mWebView.getSettings().setAppCacheEnabled(true);
+        mWebView.getSettings().setSupportZoom(true);
+        mWebView.getSettings().setBuiltInZoomControls(false);
+        mWebView.getSettings().setLoadWithOverviewMode(true);
+        mWebView.getSettings().setUseWideViewPort(true);
+        // Impersonate iPhone to prevent advertising garbage
+        mWebView.getSettings().setUserAgentString("Mozilla/5.0 (Linux; Android 2.2; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36");
 
-            // Long press
-            registerForContextMenu(mWebView);
-            mWebView.setLongClickable(true);
-            mWebView.setWebChromeClient(new CustomWebChromeClient(this, mWebView, (FrameLayout) findViewById(R.id.fullscreen_custom_content)));
+        // Long press
+        registerForContextMenu(mWebView);
+        mWebView.setLongClickable(true);
+        mWebView.setWebChromeClient(new CustomWebChromeClient(this, mWebView, (FrameLayout) findViewById(R.id.fullscreen_custom_content)));
 
 
-        }
+    }
+
 }

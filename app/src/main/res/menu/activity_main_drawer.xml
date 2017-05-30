@@ -5,10 +5,10 @@
         android:id="@+id/fb"
         android:icon="@drawable/ic_menu_news"
         android:title="@string/fb" />
-    <item
+   <!-- <item
         android:id="@+id/tw"
         android:icon="@drawable/ic_menu_top_stories"
-        android:title="@string/tw" />
+        android:title="@string/tw" /> -->
     <group android:id="@+id/group_fbnav" android:checkableBehavior="single">
         <item
             android:id="@+id/nav_news"

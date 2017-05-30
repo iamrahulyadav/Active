@@ -78,4 +78,15 @@
             android:summary="@string/jump_top_enabled_summary"
             android:title="@string/jump_top_enabled_title" />
     </PreferenceCategory>
+    <PreferenceCategory
+        android:key="pref_cat_general"
+        android:title="@string/pref_cat_general" >
+
+        <PreferenceScreen
+            android:key="pref_about"
+            android:summary="@string/pref_about_sry"
+            android:title="@string/pref_about"
+            />
+
+    </PreferenceCategory>
 </PreferenceScreen>
