@@ -10,8 +10,8 @@ android {
         applicationId "apps.shark.social"
         minSdkVersion 17
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 5
+        versionName "1.0.4.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -34,9 +34,9 @@ dependencies {
     // compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     //compile 'com.facebook.android:facebook-android-sdk:4.6.0'
     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
-    compile('com.mikepenz:actionitembadge:3.1.9@aar') {
-        transitive = true
-    }
+
+    compile 'com.github.javiersantos:AppUpdater:2.6.1'
+    compile 'com.github.hotchemi:android-rate:1.0.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'com.github.JakeLane:Android-AdvancedWebView:-SNAPSHOT'

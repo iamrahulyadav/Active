@@ -12,9 +12,13 @@
         android:title="Messages" />
 
     <item
+        android:id="@+id/pro"
+        android:icon="@drawable/ic_stat_a"
+        android:title="Get Pro" />
+    <item
         android:id="@+id/navigation_notifications"
-        android:icon="@drawable/ic_menu_notifications"
-        android:title="Noti" />
+        android:icon="@drawable/ntif_none"
+        android:title="Notifications" />
 
     <item
         android:id="@+id/navigation_menu"

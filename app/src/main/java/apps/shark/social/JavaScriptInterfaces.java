@@ -76,7 +76,7 @@ class JavaScriptInterfaces {
         mContext.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mContext.setNotificationNum(notifications_int);
+              mContext.setNotificationNum(notifications_int);
                 mContext.setMessagesNum(messages_int);
                 mContext.setRequestsNum(requests_int);
             }

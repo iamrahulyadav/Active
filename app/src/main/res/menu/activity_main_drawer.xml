@@ -3,8 +3,8 @@
 
     <item
         android:id="@+id/fb"
-        android:icon="@drawable/ic_menu_news"
-        android:title="@string/fb" />
+        android:icon="@drawable/ic_stat_a"
+        android:title="@string/go_premium" />
    <!-- <item
         android:id="@+id/tw"
         android:icon="@drawable/ic_menu_top_stories"

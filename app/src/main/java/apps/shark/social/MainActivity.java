@@ -1,6 +1,7 @@
 package apps.shark.social;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -10,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -47,13 +49,13 @@ import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.github.clans.fab.FloatingActionMenu;
+import com.github.javiersantos.appupdater.AppUpdater;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.greysonparrelli.permiso.Permiso;
-import com.mikepenz.actionitembadge.library.ActionItemBadge;
-import com.mikepenz.actionitembadge.library.utils.BadgeStyle;
+
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -67,7 +69,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 
+import hotchemi.android.rate.AppRate;
+import hotchemi.android.rate.OnClickButtonListener;
 import im.delight.android.webview.AdvancedWebView;
+
+import static android.R.attr.windowBackground;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -76,14 +82,13 @@ public class MainActivity extends AppCompatActivity
     static final String FACEBOOK_URL_BASE = "https://m.facebook.com/";
     public static final String FACEBOOK_URL_BASE_ENCODED = "https%3A%2F%2Fm.facebook.com%2F";
     public static final List<String> HOSTNAMES = Arrays.asList("facebook.com", "*.facebook.com", "*.fbcdn.net", "*.akamaihd.net");
-    public final BadgeStyle BADGE_SIDE_FULL = new BadgeStyle(BadgeStyle.Style.LARGE, R.layout.menu_badge_full, R.color.colorAccent, R.color.colorAccent, Color.WHITE);
     private FirebaseAnalytics mFirebaseAnalytics;
     private AdView mAdView;
-
+    private String appName="apps.shark.socialpro";
     // Members
     PackageInfo info;
     private String something;
-    BottomNavigationView navigation;
+    public BottomNavigationView navigation;
     SwipeRefreshLayout swipeView;
     NavigationView mNavigationView;
     View mCoordinatorLayoutView;
@@ -127,10 +132,18 @@ public class MainActivity extends AppCompatActivity
                 case R.id.navigation_home:
                     mWebView.loadUrl("javascript:(function()%7Btry%7Bdocument.querySelector('%23feed_jewel%20%3E%20a').click()%7Dcatch(_)%7Bwindow.location.href%3D'" + FACEBOOK_URL_BASE_ENCODED + "home.php'%7D%7D)()");
 
-                    //loadWebView();
+                    loadWebView();
 
                     return true;
-                case R.id.navigation_dashboard:
+                case R.id.pro:
+                    try {
+                        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appName));
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                    } catch (android.content.ActivityNotFoundException anfe) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appName)));
+                    }
+               case R.id.navigation_dashboard:
                     mWebView.loadUrl("javascript:(function()%7Btry%7Bdocument.querySelector('%23messages_jewel%20%3E%20a').click()%7Dcatch(_)%7Bwindow.location.href%3D'" + FACEBOOK_URL_BASE_ENCODED + "messages%2F'%7D%7D)()");
                     JavaScriptHelpers.updateNums(mWebView);
 
@@ -162,6 +175,30 @@ public class MainActivity extends AppCompatActivity
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
+
+
+
+        //app rate stuff
+        AppRate.with(this)
+                .setInstallDays(0) // default 10, 0 means install day.
+                .setLaunchTimes(2) // default 10
+                .setRemindInterval(2) // default 1
+                .setShowLaterButton(true) // default true
+                .setDebug(false) // default false
+                .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
+                    @Override
+                    public void onClickButton(int which) {
+                        Log.d(MainActivity.class.getName(), Integer.toString(which));
+                    }
+                })
+                .monitor();
+
+        // Show a dialog if meets conditions
+        AppRate.showRateDialogIfMeetsConditions(this);
+
+        //app update checker
+        AppUpdater appUpdater = new AppUpdater(this);
+        appUpdater.start();
 
     // Preferences
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
@@ -236,6 +273,7 @@ public class MainActivity extends AppCompatActivity
         mPreferences.registerOnSharedPreferenceChangeListener(listener);
 
          navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         // Setup the toolbar
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -251,12 +289,7 @@ public class MainActivity extends AppCompatActivity
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
 
-        // Create the badge for messages
-        ActionItemBadge.update(this, mNavigationView.getMenu().findItem(R.id.nav_messages), (Drawable) null, BADGE_SIDE_FULL, Integer.MIN_VALUE);
-        ActionItemBadge.update(this, mNavigationView.getMenu().findItem(R.id.nav_friendreq), (Drawable) null, BADGE_SIDE_FULL, Integer.MIN_VALUE);
-        ActionItemBadge.update(this,navigation.getMenu().findItem(R.id.navigation_notifications),(Drawable) null, BADGE_SIDE_FULL, Integer.MIN_VALUE);
-        ActionItemBadge.update(this,navigation.getMenu().findItem(R.id.navigation_dashboard),(Drawable) null, BADGE_SIDE_FULL, Integer.MIN_VALUE);
-        // Hide buttons if they are disabled
+      // Hide buttons if they are disabled
         if (!mPreferences.getBoolean(SettingsActivity.KEY_PREF_MESSAGING, false)) {
             mNavigationView.getMenu().findItem(R.id.nav_messages).setVisible(false);
         }
@@ -444,8 +477,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         switch (item.getItemId()) {
             case R.id.fb:
-                Intent FBActivity = new Intent(MainActivity.this, MainActivity.class);
-                startActivity(FBActivity);
+                try {
+                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appName));
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appName)));
+                }
 
             /*case R.id.tw:
                 Intent TWActivity = new Intent(MainActivity.this, MainActivity.class);
@@ -541,7 +579,7 @@ public class MainActivity extends AppCompatActivity
             loginSnackbar = Helpers.loginPrompt(mCoordinatorLayoutView);
             setLoading(false);
            mWebView.setVisibility(View.GONE);
-            //mWebView.loadUrl("file:///android_asset/intro.html");
+
 
             // Show login button
             mNavigationView.getMenu().findItem(R.id.nav_fblogin).setVisible(true);
@@ -608,12 +646,16 @@ public class MainActivity extends AppCompatActivity
 
     public void setNotificationNum(int num) {
         if (num > 0) {
-            //ActionItemBadge.update(mNotificationButton, ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_notifications_active, null), num);
+         //  ActionItemBadge.update(mNotificationButton, ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_notifications_active, null), num);
            // navigation.findViewById(R.id.navigation_dashboard).;
-            ActionItemBadge.update(navigation.getMenu().findItem(R.id.nav_noti),num);
+        //    ActionItemBadge.update(mNavigationView.getMenu().findItem(R.id.nav_noti), num);
+           // ActionItemBadge.update(navigation.getMenu().findItem(R.id.navigation_notifications),num);
+            navigation.getMenu().getItem(3).setIcon(R.drawable.notif_active);
+
         } else {
             // Hide the badge and show the washed-out button
-            ActionItemBadge.update(mNotificationButton, ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_notifications, null), Integer.MIN_VALUE);
+            //ActionItemBadge.update(mNotificationButton, ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_notifications, null), Integer.MIN_VALUE);
+            navigation.getMenu().getItem(3).setIcon(R.drawable.ntif_none);
         }
     }
 
@@ -621,24 +663,22 @@ public class MainActivity extends AppCompatActivity
         // Only update message count if enabled
         if (mPreferences.getBoolean(SettingsActivity.KEY_PREF_MESSAGING, false)) {
             if (num > 0) {
-                ActionItemBadge.update(mNotificationButton, ResourcesCompat.getDrawable(getResources(), R.drawable.ic_messages_active, null), Integer.MIN_VALUE);
-                      ActionItemBadge.update(mNavigationView.getMenu().findItem(R.id.nav_messages), num);
-                ActionItemBadge.update(navigation.getMenu().findItem(R.id.navigation_dashboard),num);
+                navigation.getMenu().getItem(1).setIcon(R.drawable.mess_active);
             } else {
                 // Hide the badge and show the washed-out button
-                ActionItemBadge.update(mNotificationButton, ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_messages, null), Integer.MIN_VALUE);
 
-                ActionItemBadge.update(mNavigationView.getMenu().findItem(R.id.nav_messages), Integer.MIN_VALUE);
+     navigation.getMenu().getItem(1).setIcon(R.drawable.ic_menu_messages);
             }
         }
     }
 
     public void setRequestsNum(int num) {
         if (num > 0) {
-            ActionItemBadge.update(mNavigationView.getMenu().findItem(R.id.nav_friendreq), num);
+            Snackbar.make(mCoordinatorLayoutView,"you have a new friend request", Snackbar.LENGTH_SHORT).show();
+
         } else {
             // Hide the badge and show the washed-out button
-            ActionItemBadge.update(mNavigationView.getMenu().findItem(R.id.nav_friendreq), Integer.MIN_VALUE);
+
         }
     }
 

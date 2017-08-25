@@ -1,7 +1,11 @@
 package apps.shark.social;
 
 import android.net.UrlQuerySanitizer;
+import android.util.Base64;
 import android.webkit.WebView;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 /**
  * Created by Harsha on 5/5/2017.
@@ -21,6 +25,10 @@ class JavaScriptHelpers {
 
     public static void updateNumsService(WebView view) {
         view.loadUrl("javascript:(function()%7Bfunction%20n_s()%7Bandroid.getNums(document.querySelector(%22%23notifications_jewel%20%3E%20a%20%3E%20div%20%3E%20span%5Bdata-sigil%3Dcount%5D%22).innerHTML%2Cdocument.querySelector(%22%23messages_jewel%20%3E%20a%20%3E%20div%20%3E%20span%5Bdata-sigil%3Dcount%5D%22).innerHTML%2Cdocument.querySelector(%22%23requests_jewel%20%3E%20a%20%3E%20div%20%3E%20span%5Bdata-sigil%3Dcount%5D%22).innerHTML)%2CsetTimeout(n_s%2C" + BADGE_UPDATE_INTERVAL + ")%7Dtry%7Bn_s()%7Dcatch(_)%7B%7D%7D)()");
+    }
+    public static void videoView(WebView view) {
+        view.loadUrl("javascript:(function prepareVideo() { var el = document.querySelectorAll('div[data-sigil]');for(var i=0;i<el.length; i++){var sigil = el[i].dataset.sigil;if(sigil.indexOf('inlineVideo') > -1){delete el[i].dataset.sigil;console.log(i);var jsonData = JSON.parse(el[i].dataset.store);el[i].setAttribute('onClick', 'Vid.LoadVideo(\"'+jsonData['src']+'\");');}}})()");
+        view.loadUrl("javascript:( window.onload=prepareVideo;)()");
     }
 
     public static void paramLoader(WebView view, String url) {
@@ -47,7 +55,7 @@ class JavaScriptHelpers {
     }
 
     public static void loadCSS(WebView view, String css) {
-        // Inject CSS string to the HEAD of the webpage
         view.loadUrl("javascript:(function()%7Bvar%20styles%3Ddocument.createElement('style')%3Bstyles.innerHTML%3D'" + css + "'%2Cstyles.onload%3Dandroid.loadingCompleted()%2Cdocument.getElementsByTagName('head')%5B0%5D.appendChild(styles)%7D)()");
+
     }
 }

@@ -6,7 +6,7 @@
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".Activities.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -83,16 +83,17 @@
 
                 app:adSize="SMART_BANNER"
                 app:adUnitId="ca-app-pub-3736041520074042/2770501419"/>
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom|end"
-        android:background="?android:attr/windowBackground"
-        app:menu="@menu/navigation" />
-        </android.support.design.widget.CoordinatorLayout>
 
+            <android.support.design.widget.BottomNavigationView
+                android:id="@+id/navigation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom|end"
+                android:background="?android:attr/windowBackground"
+                app:menu="@menu/navigation" />
+        </android.support.design.widget.CoordinatorLayout>
+        <!--  android:background="?android:attr/windowBackground" -->
     </LinearLayout>
 
     <FrameLayout

@@ -78,6 +78,7 @@ class WebViewListener implements AdvancedWebView.Listener {
         mActivity.setLoading(true);
     }
 
+
     @Override
     public void onPageFinished(String url) {
         // Only do things if logged in
@@ -87,6 +88,8 @@ class WebViewListener implements AdvancedWebView.Listener {
 
             // Hide Orange highlight on focus
             String css = HIDE_ORANGE_FOCUS;
+				 // Hide Orange highlight on focus
+                css += "*{-webkit-tap-highlight-color:transparent;outline:0}";
 
             // Hide the menu bar (but not on the composer or if disabled)
             if (mPreferences.getBoolean(SettingsActivity.KEY_PREF_HIDE_MENU_BAR, true) && !url.contains("/composer/") && !url.contains("/friends/")) {

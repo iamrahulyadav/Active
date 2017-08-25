@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/notifications_setting_title">
-        <CheckBoxPreference
+    <PreferenceCategory android:title="@string/go_premium">
+        <PreferenceScreen
+            android:summary="Experience ad free and more features like 'DARK MODE', 'COLOURFUL THEMES', 'BETTER NOTIFICATIONS' from our PRO version app. "
+            android:title="Get the Pro version">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://play.google.com/store/apps/details?id=apps.shark.socialpro"/>
+        </PreferenceScreen>
+      <!--  <CheckBoxPreference
             android:defaultValue="false"
             android:key="notifications_enabled"
             android:summary="@string/notifications_enabled_summary"
@@ -17,7 +24,16 @@
             android:defaultValue="true"
             android:key="notifications_vibration"
             android:summary="@string/notifications_vibration_summary"
-            android:title="@string/notifications_vibration_title" />
+            android:title="@string/notifications_vibration_title" /> -->
+
+
+    <PreferenceScreen
+        android:summary="@string/more_apps_summary"
+        android:title="@string/more_apps">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://play.google.com/store/apps/developer?id=SHARK+App+Development"/>
+    </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/content_setting_title">
         <CheckBoxPreference
@@ -25,17 +41,38 @@
             android:key="location_enabled"
             android:summary="@string/location_enabled_summary"
             android:title="@string/location_enabled_title" />
+        <PreferenceScreen
+            android:summary="Enjoy Facebook in Dark Mode"
+            android:title="Dark Mode (PRO)">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://play.google.com/store/apps/details?id=apps.shark.socialpro"/>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:summary="Enjoy Facebook in Data saving Mode"
+            android:title="Data save Mode (PRO)">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://play.google.com/store/apps/details?id=apps.shark.socialpro"/>
+        </PreferenceScreen>
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="most_recent_menu"
             android:summary="@string/most_recent_menu_summary"
             android:title="@string/most_recent_menu_title" />
+        <PreferenceScreen
+            android:summary="Enjoy Facebook in the color you like the most.Get Active Pro app and enjoy your time.. "
+            android:title="Colourful themes (PRO)">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://play.google.com/store/apps/details?id=apps.shark.socialpro"/>
+        </PreferenceScreen>
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_editor_newsfeed"
             android:summary="@string/hide_editor_newsfeed_summary"
             android:title="@string/hide_editor_newsfeed_title" />
-        <CheckBoxPreference
+       <CheckBoxPreference
             android:defaultValue="false"
             android:key="stop_images"
             android:summary="@string/stop_images_summary"
@@ -57,11 +94,11 @@
             android:key="hide_menu_bar"
             android:summary="@string/hide_menu_bar_summary"
             android:title="@string/hide_menu_bar_title" />
-        <CheckBoxPreference
+       <!-- <CheckBoxPreference
             android:defaultValue="false"
             android:key="hide_fab_on_scroll"
             android:summary="@string/hide_fab_on_scroll_summary"
-            android:title="@string/hide_fab_on_scroll_title" />
+            android:title="@string/hide_fab_on_scroll_title" /> -->
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="back_button_enabled"
@@ -78,15 +115,22 @@
             android:summary="@string/jump_top_enabled_summary"
             android:title="@string/jump_top_enabled_title" />
     </PreferenceCategory>
-    <PreferenceCategory
-        android:key="pref_cat_general"
-        android:title="@string/pref_cat_general" >
+    <PreferenceCategory android:title="@string/more">
+
+        <Preference android:title="@string/more" android:summary="Developed by Harsha pulikollu"/>
 
         <PreferenceScreen
-            android:key="pref_about"
-            android:summary="@string/pref_about_sry"
-            android:title="@string/pref_about"
-            />
-
+            android:title="@string/source_code">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/harshapulikollu/Active"/>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:title="@string/bug">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/harshapulikollu/Active/issues"/>
+        </PreferenceScreen>
     </PreferenceCategory>
+
 </PreferenceScreen>
